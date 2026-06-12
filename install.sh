@@ -24,22 +24,63 @@ get_content() {
   fi
 }
 
+detect_and_update_graph() {
+  local possible_graphs=(
+    "knowledge/graphify-out/graph.json"
+    "graphify-out/graph.json"
+    "graph.json"
+    "../knowledge/graphify-out/graph.json"
+  )
+  
+  local graph_path=""
+  for g in "${possible_graphs[@]}"; do
+    if [ -f "$g" ]; then
+      graph_path="$g"
+      break
+    fi
+  done
+  
+  if [ -n "$graph_path" ]; then
+    echo "Graphify graph detected at: $graph_path"
+    
+    # Ensure scripts/update_graph.py is present locally to execute
+    if [ ! -f "scripts/update_graph.py" ]; then
+      mkdir -p scripts
+      get_content "scripts/update_graph.py" > scripts/update_graph.py
+    fi
+    
+    if command -v python3 &>/dev/null; then
+      python3 scripts/update_graph.py --skill orchestrator-skill --category knowledge_skills_ai_agentic_systems --description "Master orchestration and dynamic learning skill." --graph "$graph_path"
+      echo "✓ Automatically registered orchestrator-skill in detected Graphify graph."
+    elif command -v python &>/dev/null; then
+      python scripts/update_graph.py --skill orchestrator-skill --category knowledge_skills_ai_agentic_systems --description "Master orchestration and dynamic learning skill." --graph "$graph_path"
+      echo "✓ Automatically registered orchestrator-skill in detected Graphify graph."
+    else
+      echo "⚠ Python not found. Skipping automatic Graphify indexing."
+      echo "You can index manually later using: python scripts/update_graph.py --skill orchestrator-skill --category knowledge_skills_ai_agentic_systems --description \"...\" --graph $graph_path"
+    fi
+  fi
+}
+
 install_cursor() {
   echo "Installing for Cursor (.cursorrules)..."
   get_content "orchestrator-skill.md" > .cursorrules
   echo "✓ Saved to .cursorrules in current directory."
+  detect_and_update_graph
 }
 
 install_claude() {
   echo "Installing for Claude Code (.clauderules)..."
   get_content "orchestrator-skill.md" > .clauderules
   echo "✓ Saved to .clauderules in current directory."
+  detect_and_update_graph
 }
 
 install_windsurf() {
   echo "Installing for Windsurf (.windsurfrules)..."
   get_content "orchestrator-skill.md" > .windsurfrules
   echo "✓ Saved to .windsurfrules in current directory."
+  detect_and_update_graph
 }
 
 install_copilot() {
@@ -47,6 +88,7 @@ install_copilot() {
   mkdir -p .github
   get_content "orchestrator-skill.md" > .github/copilot-instructions.md
   echo "✓ Saved to .github/copilot-instructions.md in current directory."
+  detect_and_update_graph
 }
 
 install_antigravity() {
@@ -74,7 +116,7 @@ install_antigravity() {
   done
   
   if [ $installed -eq 0 ]; then
-    # Fallback to default antigravity path
+    # Fallback to default
     local fallback="$HOME/.gemini/config/skills/fetch-function"
     echo "No config directory found. Creating default: $HOME/.gemini/config/skills/"
     mkdir -p "$fallback/scripts"

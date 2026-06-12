@@ -24,11 +24,58 @@ function Get-Content-Helper {
     }
 }
 
+function Detect-And-Update-Graph {
+    $possibleGraphs = @(
+        "knowledge/graphify-out/graph.json",
+        "graphify-out/graph.json",
+        "graph.json",
+        "../knowledge/graphify-out/graph.json"
+    )
+    
+    $graphPath = $null
+    foreach ($g in $possibleGraphs) {
+        if (Test-Path $g) {
+            $graphPath = $g
+            break
+        }
+    }
+    
+    if ($null -ne $graphPath) {
+        Write-Host "Graphify graph detected at: $graphPath"
+        
+        # Ensure scripts/update_graph.py is present
+        if (-not (Test-Path "scripts/update_graph.py")) {
+            if (-not (Test-Path "scripts")) {
+                New-Item -ItemType Directory -Path "scripts" | Out-Null
+            }
+            $scriptContent = Get-Content-Helper "scripts/update_graph.py"
+            $scriptContent | Out-File -FilePath "scripts/update_graph.py" -Encoding utf8
+        }
+        
+        # Check if Python is installed and run
+        $pythonCmd = $null
+        if (Get-Command "python3" -ErrorAction SilentlyContinue) {
+            $pythonCmd = "python3"
+        } elseif (Get-Command "python" -ErrorAction SilentlyContinue) {
+            $pythonCmd = "python"
+        }
+        
+        if ($null -ne $pythonCmd) {
+            & $pythonCmd "scripts/update_graph.py" --skill "orchestrator-skill" --category "knowledge_skills_ai_agentic_systems" --description "Master orchestration and dynamic learning skill." --graph "$graphPath"
+            Write-Host "✓ Automatically registered orchestrator-skill in detected Graphify graph." -ForegroundColor Green
+        } else {
+            Write-Host "⚠ Python not found. Skipping automatic Graphify indexing." -ForegroundColor Yellow
+            Write-Host "You can index manually later using: python scripts/update_graph.py --skill orchestrator-skill --category knowledge_skills_ai_agentic_systems --description `"...`" --graph $graphPath" -ForegroundColor Yellow
+        }
+    }
+}
+
 function Install-Cursor {
     Write-Host "Installing for Cursor (.cursorrules)..."
     $content = Get-Content-Helper "orchestrator-skill.md"
     $content | Out-File -FilePath ".cursorrules" -Encoding utf8
     Write-Host "✓ Saved to .cursorrules in current directory." -ForegroundColor Green
+    Detect-And-Update-Graph
 }
 
 function Install-Claude {
@@ -36,6 +83,7 @@ function Install-Claude {
     $content = Get-Content-Helper "orchestrator-skill.md"
     $content | Out-File -FilePath ".clauderules" -Encoding utf8
     Write-Host "✓ Saved to .clauderules in current directory." -ForegroundColor Green
+    Detect-And-Update-Graph
 }
 
 function Install-Windsurf {
@@ -43,6 +91,7 @@ function Install-Windsurf {
     $content = Get-Content-Helper "orchestrator-skill.md"
     $content | Out-File -FilePath ".windsurfrules" -Encoding utf8
     Write-Host "✓ Saved to .windsurfrules in current directory." -ForegroundColor Green
+    Detect-And-Update-Graph
 }
 
 function Install-Copilot {
@@ -53,6 +102,7 @@ function Install-Copilot {
     $content = Get-Content-Helper "orchestrator-skill.md"
     $content | Out-File -FilePath ".github/copilot-instructions.md" -Encoding utf8
     Write-Host "✓ Saved to .github/copilot-instructions.md in current directory." -ForegroundColor Green
+    Detect-And-Update-Graph
 }
 
 function Install-Antigravity {
