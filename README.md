@@ -33,6 +33,26 @@ This orchestration layer forces the AI agent to assess task complexity, decompos
 
 ## 🛠️ Installation & Setup
 
+### ⚡ One-Command Installation
+
+You can install the Orchestrator rules into your current project folder automatically. Run the command matching your operating system in your terminal:
+
+**Linux / macOS (Bash):**
+```bash
+curl -sSL https://raw.githubusercontent.com/KSensei99/ai-orchestrator-skill/main/install.sh | bash
+```
+
+**Windows (PowerShell):**
+```powershell
+irm https://raw.githubusercontent.com/KSensei99/ai-orchestrator-skill/main/install.ps1 | iex
+```
+
+*These scripts will open an interactive menu letting you choose which AI tool to target (Cursor, Claude Code, Windsurf, Copilot, or global Antigravity/OpenCode skills).*
+
+---
+
+### Manual Setup
+
 Choose the guide below corresponding to your AI assistant/IDE:
 
 ### 1. Cursor (`.cursorrules`)
