@@ -46,51 +46,60 @@ This orchestrator enforces strict constraints on the AI's logic to prevent commo
 
 ## 🛠️ Installation & Setup
 
-### ⚡ One-Command Installation
-
-You can install the Orchestrator rules into your current project folder automatically. Run the command matching your operating system in your terminal:
-
-**Linux / macOS (Bash):**
-```bash
-curl -sSL https://raw.githubusercontent.com/KSensei99/ai-orchestrator-skill/main/install.sh | bash
-```
-
-**Windows (PowerShell):**
-```powershell
-irm https://raw.githubusercontent.com/KSensei99/ai-orchestrator-skill/main/install.ps1 | iex
-```
-
-*These scripts will open an interactive menu letting you choose which AI tool to target (Cursor, Claude Code, Windsurf, Copilot, or global Antigravity/OpenCode skills).*
+Choose your installation method: either a **one-command script** for your specific Operating System, or a **manual configuration** guide for your specific AI Coder/IDE.
 
 ---
 
-### Manual Setup
+### 💻 OS-Specific One-Command Installation
 
-Choose the guide below corresponding to your AI assistant/IDE:
+Run the command matching your operating system in your terminal to open an interactive installation wizard.
 
-### 1. Cursor (`.cursorrules`)
-To load the orchestrator project-wide in Cursor:
-1. Copy the contents of `orchestrator-skill.md`.
-2. Paste them into a `.cursorrules` file at the root of your project directory, or add them under **Cursor Settings > Features > Rules for AI**.
+#### Windows (PowerShell)
+```powershell
+irm https://raw.githubusercontent.com/KSensei99/ai-orchestrator-skill/main/install.ps1 | iex
+```
+*Note: This downloads and runs the PowerShell installer to set up Cursor, Claude, Windsurf, or global config directories.*
 
-### 2. Claude Code (`.clauderules`)
-To load the orchestrator in Claude CLI sessions:
-1. Copy the contents of `orchestrator-skill.md`.
-2. Save it as `.clauderules` in the root of your git repository. Claude CLI will automatically load these rules at startup.
+#### macOS / Linux (Bash)
+```bash
+curl -sSL https://raw.githubusercontent.com/KSensei99/ai-orchestrator-skill/main/install.sh | bash
+```
+*Note: This downloads and executes the Bash installer script. You can pass arguments to run silently: `curl -sSL ... | bash -s -- --target cursor`.*
 
-### 3. GitHub Copilot & VS Code (`.github/copilot-instructions.md`)
-To guide GitHub Copilot in VS Code or VS Code Chat:
-1. Copy the contents of `orchestrator-skill.md`.
-2. Save it as `.github/copilot-instructions.md` in your project repository.
+---
 
-### 4. Windsurf (`.windsurfrules`)
-To configure Windsurf's agent:
-1. Copy the contents of `orchestrator-skill.md`.
+### ⚙️ IDE & AI Coder Manual Configuration
+
+If you prefer to configure the orchestrator manually, follow the guide for your environment:
+
+#### 🟢 Claude Code
+1. Copy the contents of [orchestrator-skill.md](orchestrator-skill.md).
+2. Save it as `.clauderules` at the root of your project repository.
+3. Claude CLI will automatically load these rules at startup.
+
+#### 🔵 Cursor
+1. Copy the contents of [orchestrator-skill.md](orchestrator-skill.md).
+2. Paste them into a `.cursorrules` file at the root of your project directory, or add them in the UI settings under **Cursor Settings > Features > Rules for AI**.
+
+#### 🟡 Windsurf
+1. Copy the contents of [orchestrator-skill.md](orchestrator-skill.md).
 2. Save it as `.windsurfrules` at the root of your workspace.
 
-### 5. Kimi, Codex, ChatGPT, & Other Web UIs
-For web-based AI coding interfaces:
-- Paste the contents of `orchestrator-skill.md` as custom instructions in your system prompt settings, or paste it as the initial system framing prompt at the start of your chat session.
+#### 🐙 VS Code & GitHub Copilot
+1. Copy the contents of [orchestrator-skill.md](orchestrator-skill.md).
+2. Create a `.github` folder if it doesn't exist and save the file as `.github/copilot-instructions.md` in your project repository.
+
+#### 🌐 Web-Based AI Coders (Kimi, Qwen, Codex, ChatGPT)
+- Copy the contents of [orchestrator-skill.md](orchestrator-skill.md).
+- Paste them into the **Custom Instructions** / **System Instructions** settings in the model's web interface, or send it as the initial prompt of a new chat session.
+
+#### 🧠 Antigravity / OpenCode / Hermes / Kiro
+To install as a global system skill:
+1. Create a directory named `fetch-function` inside your global skill config path:
+   - macOS/Linux: `~/.config/skills/fetch-function/`
+   - Windows: `%USERPROFILE%\.gemini\config\skills\fetch-function\`
+2. Save [orchestrator-skill.md](orchestrator-skill.md) as `SKILL.md` inside that directory.
+3. Save `scripts/update_graph.py` inside a `scripts/` folder in that directory to enable dynamic graph indexing.
 
 ---
 
