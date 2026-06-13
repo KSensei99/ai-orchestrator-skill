@@ -31,6 +31,19 @@ This orchestration layer forces the AI agent to assess task complexity, decompos
 
 ---
 
+## 🧠 Core Philosophy & Truth Principles
+
+This orchestrator enforces strict constraints on the AI's logic to prevent common pitfalls such as speculation, false agreement, and bloated code modifications:
+
+*   **Speak the Hard Truth**: The AI is forbidden from lying, guessing, or presenting ambiguous/speculative results. All responses must be grounded in verified facts.
+*   **Adversarial Objectivity**: The AI will not blindly agree with the user to be polite or "helpful". It is instructed to fact-check user inputs, identify errors, and only agree when the user is factually correct.
+*   **Surgical Code Changes**: Touch only what you must. The AI is directed to write/modify the minimum amount of code required to resolve a task, avoiding unrelated changes.
+*   **No Speculation**: The AI must not guess intent, configurations, or parameters. If there is ambiguity or a lack of context, the AI will openly expose its confusion.
+*   **Expose Trade-offs**: All architectural, design, or layout recommendations must be presented alongside their trade-offs (never as one-sided wins).
+*   **Cleanup Your Mess**: The AI only cleans up or alters files and environments that it directly created during the active task.
+
+---
+
 ## 🛠️ Installation & Setup
 
 ### ⚡ One-Command Installation
