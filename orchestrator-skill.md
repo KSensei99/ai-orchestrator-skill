@@ -8,7 +8,7 @@ metadata:
 
 # AI Orchestrator Skill
 
-The AI Orchestrator is a master instruction framework designed to sit at the entry point of your AI coding assistant (e.g., Claude Code, Cursor, Kimi, Codex, Windsurf, or custom system prompts). It reads the task, evaluates true complexity, decomposes the work into atomic sub-tasks, maps those sub-tasks to specialized domain skills and MCP tools, and enforces a strict law: **the AI performs no substantive action raw — every action is guided by a specific skill or tool.**
+The AI Orchestrator is a master instruction framework designed to sit at the entry point of your AI coding assistant (e.g., Claude Code, Cursor, Kimi, Codex, Windsurf, Hermes, Kiro, Qwen, or custom system prompts). It reads the task, evaluates true complexity, decomposes the work into atomic sub-tasks, maps those sub-tasks to specialized domain skills and MCP tools, and enforces a strict law: **the AI performs no substantive action raw — every action is guided by a specific skill or tool.**
 
 ---
 

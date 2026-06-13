@@ -11,7 +11,7 @@ function Show-Help {
     Write-Host "Usage: .\install.ps1 -Target <type>"
     Write-Host ""
     Write-Host "Options:"
-    Write-Host "  -Target <type>   Specify target: cursor, claude, windsurf, copilot, antigravity, all-local, menu"
+    Write-Host "  -Target <type>   Specify target: cursor, claude, windsurf, copilot, global-apps, all-local, menu"
 }
 
 function Get-Content-Helper {
@@ -105,27 +105,54 @@ function Install-Copilot {
     Detect-And-Update-Graph
 }
 
-function Install-Antigravity {
-    Write-Host "Installing for Antigravity/OpenCode/Hermes/Kiro..."
+function Install-Global-Apps {
+    Write-Host "Installing globally for Desktop Apps and CLI sessions..."
+    
+    $skillContent = Get-Content-Helper "orchestrator-skill.md"
+    $scriptContent = Get-Content-Helper "scripts/update_graph.py"
     
     $homeDir = [System.Environment]::GetFolderPath("UserProfile")
-    $skillPaths = @(
-        "$homeDir\.config\opencode\skills\fetch-function",
-        "$homeDir\.gemini\config\skills\fetch-function",
-        "$homeDir\.config\skills\fetch-function"
+    
+    # 1. Claude Code Global Rules ($HOME\.clauderules)
+    $skillContent | Out-File -FilePath "$homeDir\.clauderules" -Encoding utf8
+    Write-Host "[SUCCESS] Installed globally for Claude Code in $homeDir\.clauderules" -ForegroundColor Green
+    
+    # 2. Cursor Global Rules ($HOME\.cursorrules)
+    $skillContent | Out-File -FilePath "$homeDir\.cursorrules" -Encoding utf8
+    Write-Host "[SUCCESS] Installed globally for Cursor in $homeDir\.cursorrules" -ForegroundColor Green
+    
+    # 3. System Config Skill Directories (Antigravity, OpenCode, Hermes, Kiro, Qwen, Codex, Claude Code, Cursor)
+    $appConfigs = @(
+        @{ Root = "$homeDir\.gemini"; SkillDir = "$homeDir\.gemini\config\skills\fetch-function" },
+        @{ Root = "$homeDir\.config\opencode"; SkillDir = "$homeDir\.config\opencode\skills\fetch-function" },
+        @{ Root = "$homeDir\.config\qwen"; SkillDir = "$homeDir\.config\qwen\skills\fetch-function" },
+        @{ Root = "$homeDir\.config\codex"; SkillDir = "$homeDir\.config\codex\skills\fetch-function" },
+        @{ Root = "$homeDir\.config\hermes"; SkillDir = "$homeDir\.config\hermes\skills\fetch-function" },
+        @{ Root = "$homeDir\.config\kiro"; SkillDir = "$homeDir\.config\kiro\skills\fetch-function" },
+        @{ Root = "$homeDir\.config\claude"; SkillDir = "$homeDir\.config\claude\skills\fetch-function" },
+        @{ Root = "$homeDir\.config\cursor"; SkillDir = "$homeDir\.config\cursor\skills\fetch-function" },
+        @{ Root = "$homeDir\.config"; SkillDir = "$homeDir\.config\skills\fetch-function" }
     )
     
+    if ($null -ne $env:APPDATA) {
+        $appConfigs += @(
+            @{ Root = "$env:APPDATA\OpenCode"; SkillDir = "$env:APPDATA\OpenCode\skills\fetch-function" },
+            @{ Root = "$env:APPDATA\Qwen"; SkillDir = "$env:APPDATA\Qwen\skills\fetch-function" },
+            @{ Root = "$env:APPDATA\Codex"; SkillDir = "$env:APPDATA\Codex\skills\fetch-function" },
+            @{ Root = "$env:APPDATA\Hermes"; SkillDir = "$env:APPDATA\Hermes\skills\fetch-function" },
+            @{ Root = "$env:APPDATA\Kiro"; SkillDir = "$env:APPDATA\Kiro\skills\fetch-function" },
+            @{ Root = "$env:APPDATA\Claude"; SkillDir = "$env:APPDATA\Claude\skills\fetch-function" },
+            @{ Root = "$env:APPDATA\Cursor"; SkillDir = "$env:APPDATA\Cursor\skills\fetch-function" }
+        )
+    }
+    
     $installed = $false
-    foreach ($path in $skillPaths) {
-        $parentDir = Split-Path -Parent $path
-        if (Test-Path $parentDir) {
-            Write-Host "Found config path: $parentDir"
+    foreach ($cfg in $appConfigs) {
+        if (Test-Path $cfg.Root) {
+            $path = $cfg.SkillDir
             if (-not (Test-Path "$path\scripts")) {
                 New-Item -ItemType Directory -Path "$path\scripts" -Force | Out-Null
             }
-            $skillContent = Get-Content-Helper "orchestrator-skill.md"
-            $scriptContent = Get-Content-Helper "scripts/update_graph.py"
-            
             $skillContent | Out-File -FilePath "$path\SKILL.md" -Encoding utf8
             $scriptContent | Out-File -FilePath "$path\scripts\update_graph.py" -Encoding utf8
             Write-Host "[SUCCESS] Installed skill to $path" -ForegroundColor Green
@@ -140,9 +167,6 @@ function Install-Antigravity {
         if (-not (Test-Path "$fallback\scripts")) {
             New-Item -ItemType Directory -Path "$fallback\scripts" -Force | Out-Null
         }
-        $skillContent = Get-Content-Helper "orchestrator-skill.md"
-        $scriptContent = Get-Content-Helper "scripts/update_graph.py"
-        
         $skillContent | Out-File -FilePath "$fallback\SKILL.md" -Encoding utf8
         $scriptContent | Out-File -FilePath "$fallback\scripts\update_graph.py" -Encoding utf8
         Write-Host "[SUCCESS] Installed skill to $fallback" -ForegroundColor Green
@@ -162,12 +186,12 @@ function Show-Menu {
     Write-Host "      AI Orchestrator Skill Installer             "
     Write-Host "=================================================="
     Write-Host "Where would you like to install the Orchestrator?"
-    Write-Host "1) Cursor (.cursorrules)"
-    Write-Host "2) Claude Code (.clauderules)"
-    Write-Host "3) Windsurf (.windsurfrules)"
-    Write-Host "4) GitHub Copilot (.github/copilot-instructions.md)"
-    Write-Host "5) Antigravity/OpenCode/Hermes/Kiro (~/.config/skills/)"
-    Write-Host "6) All Project-level rules (Cursor + Claude + Windsurf + Copilot)"
+    Write-Host "1) Local: Cursor (.cursorrules)"
+    Write-Host "2) Local: Claude Code (.clauderules)"
+    Write-Host "3) Local: Windsurf (.windsurfrules)"
+    Write-Host "4) Local: GitHub Copilot (.github/copilot-instructions.md)"
+    Write-Host "5) Local: All project rules (Cursor + Claude + Windsurf + Copilot)"
+    Write-Host "6) Global: Install for all Desktop Apps & CLIs (Cursor, Claude, Qwen, Codex, Hermes, Kiro)"
     Write-Host "7) Cancel"
     
     $opt = Read-Host "Select option [1-7]"
@@ -176,8 +200,8 @@ function Show-Menu {
         "2" { Install-Claude }
         "3" { Install-Windsurf }
         "4" { Install-Copilot }
-        "5" { Install-Antigravity }
-        "6" { Install-All-Local }
+        "5" { Install-All-Local }
+        "6" { Install-Global-Apps }
         "7" { Write-Host "Cancelled."; exit }
         default { Write-Host "Invalid option."; Start-Sleep -Seconds 1; Show-Menu }
     }
@@ -188,7 +212,7 @@ switch ($Target) {
     "claude" { Install-Claude }
     "windsurf" { Install-Windsurf }
     "copilot" { Install-Copilot }
-    "antigravity" { Install-Antigravity }
+    "global-apps" { Install-Global-Apps }
     "all-local" { Install-All-Local }
     "menu" { Show-Menu }
     default { Write-Host "Unknown target: $Target"; Show-Help; exit 1 }

@@ -1,6 +1,6 @@
 # AI Orchestrator Skill
 
-A master orchestration and dynamic learning framework designed for AI coding agents and IDEs (e.g., **Claude Code**, **Cursor**, **Kimi**, **Codex**, **Windsurf**, and **GitHub Copilot**).
+A master orchestration and dynamic learning framework designed for AI coding agents, Desktop Apps, and CLI tools (e.g., **Claude Code**, **Cursor**, **Kimi**, **Codex**, **Windsurf**, **Hermes**, **Kiro**, **Qwen**, and **GitHub Copilot**).
 
 This orchestration layer forces the AI agent to assess task complexity, decompose requests into atomic sub-tasks, and match them against specialized domain skills and toolsets before writing code or running commands. It ensures **zero raw execution** (always grounding actions in skills or documentation) and features a structured **3-Phase Critical Analysis** (Red Team → Premortem → Steelman) and a **Deep Research Pipeline**.
 
@@ -93,11 +93,36 @@ If you prefer to configure the orchestrator manually, follow the guide for your 
 - Copy the contents of [orchestrator-skill.md](orchestrator-skill.md).
 - Paste them into the **Custom Instructions** / **System Instructions** settings in the model's web interface, or send it as the initial prompt of a new chat session.
 
-#### 🧠 Antigravity / OpenCode / Hermes / Kiro
+#### 🧠 Global Skills (Antigravity, OpenCode, Hermes, Kiro, Qwen, Codex, Claude Code, Cursor)
+
 To install as a global system skill:
-1. Create a directory named `fetch-function` inside your global skill config path:
-   - macOS/Linux: `~/.config/skills/fetch-function/`
-   - Windows: `%USERPROFILE%\.gemini\config\skills\fetch-function\`
+1. Create a directory named `fetch-function` inside the global skill config path of your respective desktop app or CLI:
+   * **Antigravity**:
+     * macOS/Linux: `~/.gemini/config/skills/fetch-function/`
+     * Windows: `%USERPROFILE%\.gemini\config\skills\fetch-function\`
+   * **OpenCode**:
+     * macOS/Linux: `~/.config/opencode/skills/fetch-function/` (or `~/Library/Application Support/opencode/skills/fetch-function/` on macOS)
+     * Windows: `%APPDATA%\OpenCode\skills\fetch-function\`
+   * **Qwen**:
+     * macOS/Linux: `~/.config/qwen/skills/fetch-function/` (or `~/Library/Application Support/qwen/skills/fetch-function/` on macOS)
+     * Windows: `%APPDATA%\Qwen\skills\fetch-function\`
+   * **Codex**:
+     * macOS/Linux: `~/.config/codex/skills/fetch-function/` (or `~/Library/Application Support/codex/skills/fetch-function/` on macOS)
+     * Windows: `%APPDATA%\Codex\skills\fetch-function\`
+   * **Hermes**:
+     * macOS/Linux: `~/.config/hermes/skills/fetch-function/` (or `~/Library/Application Support/hermes/skills/fetch-function/` on macOS)
+     * Windows: `%APPDATA%\Hermes\skills\fetch-function\`
+   * **Kiro**:
+     * macOS/Linux: `~/.config/kiro/skills/fetch-function/` (or `~/Library/Application Support/kiro/skills/fetch-function/` on macOS)
+     * Windows: `%APPDATA%\Kiro\skills\fetch-function\`
+   * **Claude Code**:
+     * macOS/Linux: `~/.config/claude/skills/fetch-function/` (or `~/Library/Application Support/claude/skills/fetch-function/` on macOS)
+     * Windows: `%APPDATA%\Claude\skills\fetch-function\`
+   * **Cursor**:
+     * macOS/Linux: `~/.config/cursor/skills/fetch-function/` (or `~/Library/Application Support/cursor/skills/fetch-function/` on macOS)
+     * Windows: `%APPDATA%\Cursor\skills\fetch-function\`
+   * **Generic Config**:
+     * macOS/Linux: `~/.config/skills/fetch-function/`
 2. Save [orchestrator-skill.md](orchestrator-skill.md) as `SKILL.md` inside that directory.
 3. Save `scripts/update_graph.py` inside a `scripts/` folder in that directory to enable dynamic graph indexing.
 

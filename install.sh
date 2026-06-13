@@ -10,7 +10,7 @@ show_help() {
   echo "Usage: ./install.sh [options]"
   echo ""
   echo "Options:"
-  echo "  --target <type>   Specify target: cursor, claude, windsurf, copilot, antigravity, all-local, menu"
+  echo "  --target <type>   Specify target: cursor, claude, windsurf, copilot, global-apps, all-local, menu"
   echo "  --help            Show this help message"
 }
 
@@ -91,38 +91,78 @@ install_copilot() {
   detect_and_update_graph
 }
 
-install_antigravity() {
-  echo "Installing for Antigravity/OpenCode/Hermes/Kiro..."
+install_global_apps() {
+  echo "Installing globally for Desktop Apps and CLI sessions..."
   
-  # Determine local config path
-  local skill_paths=(
-    "$HOME/.config/opencode/skills/fetch-function"
-    "$HOME/.gemini/config/skills/fetch-function"
-    "$HOME/.config/skills/fetch-function"
-  )
+  local skill_content=""
+  local script_content=""
   
-  local installed=0
-  for path in "${skill_paths[@]}"; do
-    # Check parent directory existence or create if .gemini/.config exists
-    local parent_dir=$(dirname "$path")
-    if [ -d "$parent_dir" ]; then
-      echo "Found config path: $parent_dir"
+  skill_content=$(get_content "orchestrator-skill.md")
+  script_content=$(get_content "scripts/update_graph.py")
+  
+  # 1. Claude Code Global Rules (~/.clauderules)
+  echo "$skill_content" > "$HOME/.clauderules"
+  echo "[SUCCESS] Installed globally for Claude Code in $HOME/.clauderules"
+  
+  # 2. Cursor Global Rules (~/.cursorrules)
+  echo "$skill_content" > "$HOME/.cursorrules"
+  echo "[SUCCESS] Installed globally for Cursor in $HOME/.cursorrules"
+  
+  # 3. System Config Skill Directories (Antigravity, OpenCode, Hermes, Kiro, Qwen, Codex, Claude Code, Cursor)
+  local config_pairs
+  if [ "$(uname)" = "Darwin" ]; then
+    config_pairs=(
+      "$HOME/.gemini:$HOME/.gemini/config/skills/fetch-function"
+      "$HOME/.config/opencode:$HOME/.config/opencode/skills/fetch-function"
+      "$HOME/.config/qwen:$HOME/.config/qwen/skills/fetch-function"
+      "$HOME/.config/codex:$HOME/.config/codex/skills/fetch-function"
+      "$HOME/.config/hermes:$HOME/.config/hermes/skills/fetch-function"
+      "$HOME/.config/kiro:$HOME/.config/kiro/skills/fetch-function"
+      "$HOME/.config/claude:$HOME/.config/claude/skills/fetch-function"
+      "$HOME/.config/cursor:$HOME/.config/cursor/skills/fetch-function"
+      "$HOME/.config:$HOME/.config/skills/fetch-function"
+      "$HOME/Library/Application Support/opencode:$HOME/Library/Application Support/opencode/skills/fetch-function"
+      "$HOME/Library/Application Support/qwen:$HOME/Library/Application Support/qwen/skills/fetch-function"
+      "$HOME/Library/Application Support/codex:$HOME/Library/Application Support/codex/skills/fetch-function"
+      "$HOME/Library/Application Support/hermes:$HOME/Library/Application Support/hermes/skills/fetch-function"
+      "$HOME/Library/Application Support/kiro:$HOME/Library/Application Support/kiro/skills/fetch-function"
+      "$HOME/Library/Application Support/claude:$HOME/Library/Application Support/claude/skills/fetch-function"
+      "$HOME/Library/Application Support/cursor:$HOME/Library/Application Support/cursor/skills/fetch-function"
+    )
+  else
+    config_pairs=(
+      "$HOME/.gemini:$HOME/.gemini/config/skills/fetch-function"
+      "$HOME/.config/opencode:$HOME/.config/opencode/skills/fetch-function"
+      "$HOME/.config/qwen:$HOME/.config/qwen/skills/fetch-function"
+      "$HOME/.config/codex:$HOME/.config/codex/skills/fetch-function"
+      "$HOME/.config/hermes:$HOME/.config/hermes/skills/fetch-function"
+      "$HOME/.config/kiro:$HOME/.config/kiro/skills/fetch-function"
+      "$HOME/.config/claude:$HOME/.config/claude/skills/fetch-function"
+      "$HOME/.config/cursor:$HOME/.config/cursor/skills/fetch-function"
+      "$HOME/.config:$HOME/.config/skills/fetch-function"
+    )
+  fi
+  
+  local installed=false
+  for pair in "${config_pairs[@]}"; do
+    local root="${pair%%:*}"
+    local path="${pair#*:}"
+    if [ -d "$root" ]; then
       mkdir -p "$path/scripts"
-      get_content "orchestrator-skill.md" > "$path/SKILL.md"
-      get_content "scripts/update_graph.py" > "$path/scripts/update_graph.py"
+      echo "$skill_content" > "$path/SKILL.md"
+      echo "$script_content" > "$path/scripts/update_graph.py"
       echo "[SUCCESS] Installed skill to $path"
-      installed=1
+      installed=true
     fi
   done
   
-  if [ $installed -eq 0 ]; then
-    # Fallback to default
-    local fallback="$HOME/.gemini/config/skills/fetch-function"
-    echo "No config directory found. Creating default: $HOME/.gemini/config/skills/"
-    mkdir -p "$fallback/scripts"
-    get_content "orchestrator-skill.md" > "$fallback/SKILL.md"
-    get_content "scripts/update_graph.py" > "$fallback/scripts/update_graph.py"
-    echo "[SUCCESS] Installed skill to $fallback"
+  # Fallback: create default gemini config path if no config directories matched
+  if [ "$installed" = false ]; then
+    local default_gemini="$HOME/.gemini/config/skills/fetch-function"
+    mkdir -p "$default_gemini/scripts"
+    echo "$skill_content" > "$default_gemini/SKILL.md"
+    echo "$script_content" > "$default_gemini/scripts/update_graph.py"
+    echo "[SUCCESS] Installed skill to $default_gemini"
   fi
 }
 
@@ -138,12 +178,12 @@ run_menu() {
   echo "      AI Orchestrator Skill Installer             "
   echo "=================================================="
   echo "Where would you like to install the Orchestrator?"
-  echo "1) Cursor (.cursorrules)"
-  echo "2) Claude Code (.clauderules)"
-  echo "3) Windsurf (.windsurfrules)"
-  echo "4) GitHub Copilot (.github/copilot-instructions.md)"
-  echo "5) Antigravity/OpenCode/Hermes/Kiro (~/.config/skills/)"
-  echo "6) All Project-level rules (Cursor + Claude + Windsurf + Copilot)"
+  echo "1) Local: Cursor (.cursorrules)"
+  echo "2) Local: Claude Code (.clauderules)"
+  echo "3) Local: Windsurf (.windsurfrules)"
+  echo "4) Local: GitHub Copilot (.github/copilot-instructions.md)"
+  echo "5) Local: All project rules (Cursor + Claude + Windsurf + Copilot)"
+  echo "6) Global: Install for all Desktop Apps & CLIs (Cursor, Claude, Qwen, Codex, Hermes, Kiro)"
   echo "7) Cancel"
   read -p "Select option [1-7]: " opt
   case $opt in
@@ -151,8 +191,8 @@ run_menu() {
     2) install_claude ;;
     3) install_windsurf ;;
     4) install_copilot ;;
-    5) install_antigravity ;;
-    6) install_all_local ;;
+    5) install_all_local ;;
+    6) install_global_apps ;;
     7) echo "Cancelled."; exit 0 ;;
     *) echo "Invalid option."; run_menu ;;
   esac
@@ -174,7 +214,7 @@ case $TARGET in
   claude) install_claude ;;
   windsurf) install_windsurf ;;
   copilot) install_copilot ;;
-  antigravity) install_antigravity ;;
+  global-apps) install_global_apps ;;
   all-local) install_all_local ;;
   menu) run_menu ;;
   *) echo "Unknown target: $TARGET"; show_help; exit 1 ;;
