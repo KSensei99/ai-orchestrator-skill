@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-# AI Orchestrator Skill — Unix/macOS Installer
+# AI Orchestrator Skill - Unix/macOS Installer
 # Installs the orchestrator skill across different AI coding environments (Claude Code, Cursor, Windsurf, Copilot, Antigravity, etc.)
 
 REPO_RAW_URL="https://raw.githubusercontent.com/KSensei99/ai-orchestrator-skill/main"
@@ -51,12 +51,12 @@ detect_and_update_graph() {
     
     if command -v python3 &>/dev/null; then
       python3 scripts/update_graph.py --skill orchestrator-skill --category knowledge_skills_ai_agentic_systems --description "Master orchestration and dynamic learning skill." --graph "$graph_path"
-      echo "✓ Automatically registered orchestrator-skill in detected Graphify graph."
+      echo "[SUCCESS] Automatically registered orchestrator-skill in detected Graphify graph."
     elif command -v python &>/dev/null; then
       python scripts/update_graph.py --skill orchestrator-skill --category knowledge_skills_ai_agentic_systems --description "Master orchestration and dynamic learning skill." --graph "$graph_path"
-      echo "✓ Automatically registered orchestrator-skill in detected Graphify graph."
+      echo "[SUCCESS] Automatically registered orchestrator-skill in detected Graphify graph."
     else
-      echo "⚠ Python not found. Skipping automatic Graphify indexing."
+      echo "[WARNING] Python not found. Skipping automatic Graphify indexing."
       echo "You can index manually later using: python scripts/update_graph.py --skill orchestrator-skill --category knowledge_skills_ai_agentic_systems --description \"...\" --graph $graph_path"
     fi
   fi
@@ -65,21 +65,21 @@ detect_and_update_graph() {
 install_cursor() {
   echo "Installing for Cursor (.cursorrules)..."
   get_content "orchestrator-skill.md" > .cursorrules
-  echo "✓ Saved to .cursorrules in current directory."
+  echo "[SUCCESS] Saved to .cursorrules in current directory."
   detect_and_update_graph
 }
 
 install_claude() {
   echo "Installing for Claude Code (.clauderules)..."
   get_content "orchestrator-skill.md" > .clauderules
-  echo "✓ Saved to .clauderules in current directory."
+  echo "[SUCCESS] Saved to .clauderules in current directory."
   detect_and_update_graph
 }
 
 install_windsurf() {
   echo "Installing for Windsurf (.windsurfrules)..."
   get_content "orchestrator-skill.md" > .windsurfrules
-  echo "✓ Saved to .windsurfrules in current directory."
+  echo "[SUCCESS] Saved to .windsurfrules in current directory."
   detect_and_update_graph
 }
 
@@ -87,7 +87,7 @@ install_copilot() {
   echo "Installing for GitHub Copilot (.github/copilot-instructions.md)..."
   mkdir -p .github
   get_content "orchestrator-skill.md" > .github/copilot-instructions.md
-  echo "✓ Saved to .github/copilot-instructions.md in current directory."
+  echo "[SUCCESS] Saved to .github/copilot-instructions.md in current directory."
   detect_and_update_graph
 }
 
@@ -110,7 +110,7 @@ install_antigravity() {
       mkdir -p "$path/scripts"
       get_content "orchestrator-skill.md" > "$path/SKILL.md"
       get_content "scripts/update_graph.py" > "$path/scripts/update_graph.py"
-      echo "✓ Installed skill to $path"
+      echo "[SUCCESS] Installed skill to $path"
       installed=1
     fi
   done
@@ -122,7 +122,7 @@ install_antigravity() {
     mkdir -p "$fallback/scripts"
     get_content "orchestrator-skill.md" > "$fallback/SKILL.md"
     get_content "scripts/update_graph.py" > "$fallback/scripts/update_graph.py"
-    echo "✓ Installed skill to $fallback"
+    echo "[SUCCESS] Installed skill to $fallback"
   fi
 }
 

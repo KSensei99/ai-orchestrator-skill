@@ -1,4 +1,4 @@
-# AI Orchestrator Skill — Windows PowerShell Installer
+# AI Orchestrator Skill - Windows PowerShell Installer
 # Installs the orchestrator skill across different AI coding environments (Claude Code, Cursor, Windsurf, Copilot, Antigravity, etc.)
 
 param (
@@ -62,10 +62,10 @@ function Detect-And-Update-Graph {
         
         if ($null -ne $pythonCmd) {
             & $pythonCmd "scripts/update_graph.py" --skill "orchestrator-skill" --category "knowledge_skills_ai_agentic_systems" --description "Master orchestration and dynamic learning skill." --graph "$graphPath"
-            Write-Host "✓ Automatically registered orchestrator-skill in detected Graphify graph." -ForegroundColor Green
+            Write-Host "[SUCCESS] Automatically registered orchestrator-skill in detected Graphify graph." -ForegroundColor Green
         } else {
-            Write-Host "⚠ Python not found. Skipping automatic Graphify indexing." -ForegroundColor Yellow
-            Write-Host "You can index manually later using: python scripts/update_graph.py --skill orchestrator-skill --category knowledge_skills_ai_agentic_systems --description `"...`" --graph $graphPath" -ForegroundColor Yellow
+            Write-Host "[WARNING] Python not found. Skipping automatic Graphify indexing." -ForegroundColor Yellow
+            Write-Host "You can index manually later using: python scripts/update_graph.py --skill orchestrator-skill --category knowledge_skills_ai_agentic_systems --description '...' --graph $graphPath" -ForegroundColor Yellow
         }
     }
 }
@@ -74,7 +74,7 @@ function Install-Cursor {
     Write-Host "Installing for Cursor (.cursorrules)..."
     $content = Get-Content-Helper "orchestrator-skill.md"
     $content | Out-File -FilePath ".cursorrules" -Encoding utf8
-    Write-Host "✓ Saved to .cursorrules in current directory." -ForegroundColor Green
+    Write-Host "[SUCCESS] Saved to .cursorrules in current directory." -ForegroundColor Green
     Detect-And-Update-Graph
 }
 
@@ -82,7 +82,7 @@ function Install-Claude {
     Write-Host "Installing for Claude Code (.clauderules)..."
     $content = Get-Content-Helper "orchestrator-skill.md"
     $content | Out-File -FilePath ".clauderules" -Encoding utf8
-    Write-Host "✓ Saved to .clauderules in current directory." -ForegroundColor Green
+    Write-Host "[SUCCESS] Saved to .clauderules in current directory." -ForegroundColor Green
     Detect-And-Update-Graph
 }
 
@@ -90,7 +90,7 @@ function Install-Windsurf {
     Write-Host "Installing for Windsurf (.windsurfrules)..."
     $content = Get-Content-Helper "orchestrator-skill.md"
     $content | Out-File -FilePath ".windsurfrules" -Encoding utf8
-    Write-Host "✓ Saved to .windsurfrules in current directory." -ForegroundColor Green
+    Write-Host "[SUCCESS] Saved to .windsurfrules in current directory." -ForegroundColor Green
     Detect-And-Update-Graph
 }
 
@@ -101,7 +101,7 @@ function Install-Copilot {
     }
     $content = Get-Content-Helper "orchestrator-skill.md"
     $content | Out-File -FilePath ".github/copilot-instructions.md" -Encoding utf8
-    Write-Host "✓ Saved to .github/copilot-instructions.md in current directory." -ForegroundColor Green
+    Write-Host "[SUCCESS] Saved to .github/copilot-instructions.md in current directory." -ForegroundColor Green
     Detect-And-Update-Graph
 }
 
@@ -128,7 +128,7 @@ function Install-Antigravity {
             
             $skillContent | Out-File -FilePath "$path\SKILL.md" -Encoding utf8
             $scriptContent | Out-File -FilePath "$path\scripts\update_graph.py" -Encoding utf8
-            Write-Host "✓ Installed skill to $path" -ForegroundColor Green
+            Write-Host "[SUCCESS] Installed skill to $path" -ForegroundColor Green
             $installed = $true
         }
     }
@@ -145,7 +145,7 @@ function Install-Antigravity {
         
         $skillContent | Out-File -FilePath "$fallback\SKILL.md" -Encoding utf8
         $scriptContent | Out-File -FilePath "$fallback\scripts\update_graph.py" -Encoding utf8
-        Write-Host "✓ Installed skill to $fallback" -ForegroundColor Green
+        Write-Host "[SUCCESS] Installed skill to $fallback" -ForegroundColor Green
     }
 }
 
