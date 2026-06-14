@@ -154,19 +154,20 @@ Run each skill in sequence. Log progress (Success `[✓]`, Running `[→]`, Bloc
 
 ## FUNCTION 3 — Deep Research Pipeline
 
-> **HARD TRIGGER**: Activates when "deep research", "deep search", "comprehensive research", or equivalent research-intent language is in the prompt.
+> **HARD TRIGGER**: Activates when "deep research", "deep search", "comprehensive research", "research paper", or equivalent research-intent language is in the prompt.
 
-Execute a multi-round, iterative research pipeline:
+The deep research pipeline must strictly operate under the **Zero Raw Execution** rule. Every research, search, and browse action must be mapped to and executed via a specialized skill (e.g., `search-specialist`, `browse`, `deep-research`) using Function 2's mapping and Graphify updating logic.
 
 ### Round 1 — Decompose & Initial Scan
 1. Formulate 3–5 core research questions.
-2. Run targeted web searches to gather initial background.
-3. Extract source links and compile a facts index.
+2. **Skill Mapping**: Map the search and research sub-tasks to specialized skills (such as `search-specialist`, `browse`, `deep-research`) using the Step 5 comparison and scoring matrix from Function 2. Run the `update_graph.py` script for the selected skills.
+3. **Grounded Search**: Execute the selected skill(s) to fetch initial background. If no specialized research/browser skill is available, use the Domain Master Fallback.
+4. Extract source links and compile a facts index.
 
 ### Round 2 — Deep Dive & Verification
-1. Fetch and read the full text of the top sources.
+1. Fetch and read the full text of the top sources using mapped browsing/extraction skills (e.g., `browse`).
 2. Audit the facts for gaps, contradictions, or stale information.
-3. Run follow-up queries to resolve contradictions and fill in thin sections.
+3. Run follow-up queries and execute them using the mapped search/browsing skills to resolve contradictions and fill in thin sections.
 
 ### Round 3 — Synthesis & Citations
 1. Synthesize the findings into a highly structured, research-paper-grade markdown report.
