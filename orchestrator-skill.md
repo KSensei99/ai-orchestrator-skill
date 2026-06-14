@@ -148,7 +148,16 @@ TASK MAP:
 Wait for confirmation if the plan is complex (4+ skills), contains tool/MCP configurations, or if there is ambiguity in requirements.
 
 ### Step 8 — Execute
-Run each skill in sequence. Log progress (Success `[✓]`, Running `[→]`, Blocked `[✗]`, Paused `[⚠]`). Synthesize all outputs into a single, cohesive, unified response.
+
+To run a skill, you MUST:
+1. **Load/Invoke the Skill**: You are strictly required to call the `view_file` tool on the selected skill's `SKILL.md` (or instructions file) with the parameter `IsSkillFile` set to `true` BEFORE writing any code or executing any commands for that task.
+2. **Follow Instructions Exactly**: Once the skill file is loaded, you must strictly follow its specific instructions, workflows, commands, and tool calls. You are forbidden from performing the task using generic methods or ignoring the skill's specific workflow.
+3. **Trace and Log**: Maintain an execution log showing:
+   - `[→] [sub-task] — invoking [skill-name]` (once `view_file` is called with `IsSkillFile: true`)
+   - `[✓] [sub-task] — completed via [skill-name]` (once the skill's instructions have been executed)
+   - `[✗] [sub-task] — blocked (explain reason)`
+   - `[⚠] [sub-task] — paused (explain reason)`
+Synthesize all outputs into a single, cohesive, unified response.
 
 ---
 
@@ -179,7 +188,9 @@ The deep research pipeline must strictly operate under the **Zero Raw Execution*
 ## ZERO RAW EXECUTION — THE ABSOLUTE RULE
 
 **The AI does not perform any substantive task through blind raw generation (meaning from training data alone, without grounding).**
-- **Path A — Skill exists**: Load and execute it.
+- **Mandatory Skill Check**: You are strictly forbidden from executing any task (such as writing code, refactoring, testing, or running system commands) using raw model generation. You MUST check the local and global skill directories first.
+- **No Self-Sufficiency Bias**: Do not assume you already know how to perform the task without reading the skill file. Even if you are familiar with the technology, you MUST load and follow the corresponding skill file.
+- **Path A — Skill exists**: You MUST invoke it by calling `view_file` with `IsSkillFile: true` on its instructions file and follow its constraints.
 - **Path B — No skill exists**: Activate the Domain Master Fallback.
 
 ---
