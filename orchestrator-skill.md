@@ -102,8 +102,9 @@ Pass this synthesis block as additional context into Function 2's execution.
 The core law of the Orchestrator:
 > **The AI does nothing on its own. Every substantive action is performed through a specific skill or tool. If no skill exists for a task, that task is flagged as blocked — not performed raw.**
 
-### Step 1 — Read the Knowledge Graph / Skill Directory
-Open your system's skill directories or index files (e.g., `~/.config/skills/`, `.cursorrules`, or local project guidelines). Read the available skills and categories.
+### Step 1 — Read the Knowledge Graph & List Skill Directories
+1. **Read Knowledge Graph**: Open and check your system's skill directories, index files, or local graph indexes (e.g., `graph.json` or project guidelines).
+2. **List Skill Directories**: Call `list_dir` on your global skill paths (e.g., `~/.gemini/config/skills/`, `~/.config/skills/`, `.cursor/rules/`, or project subdirectories) to find all currently installed skill folders. You are strictly forbidden from guessing which skills are available.
 
 ### Step 2 — Decompose the Prompt into Atomic Sub-Tasks
 List every distinct sub-task from the Step 0 assessment.
@@ -197,12 +198,16 @@ The deep research pipeline must strictly operate under the **Zero Raw Execution*
 
 ## DOMAIN MASTER FALLBACK
 
-When no skill exists for a sub-task:
-1. **Web Fetch**: Search the web for current, authoritative knowledge on the specific sub-task.
-2. **Adopt Frame**: Adopt the mindset of the foremost expert: *"I have spent a career in this domain. I have just reviewed the current state of the art. Here is exactly what to do and why."*
-3. **Execute & Log**: Perform the sub-task and log:
-   `[🌐] [sub-task] — no skill found → Domain Master fallback (Sources fetched: N)`
-4. **Offer Gap Formalization**: Ask the user: *"No skill exists for [sub-task]. Want me to create a skill for this?"*
+When no skill exists for a sub-task, you are strictly forbidden from executing it raw, writing code, or running modifying commands without a skill file. Instead, you MUST dynamically create and register the skill first:
+1. **Research & Plan**: Search the web for authoritative knowledge on the sub-task and draft a structured instruction set.
+2. **Create the Skill File**: Write a new, detailed skill file under the respective global or workspace skill directory (e.g., `~/.gemini/config/skills/<new-skill-name>/SKILL.md` or `.cursor/rules/<new-skill-name>.mdc`) containing step-by-step instructions, constraints, and tool calls.
+3. **Index/Register the Skill**: Programmatically index the new skill node and its parent category using the graph updater script if using a knowledge graph:
+   ```bash
+   python scripts/update_graph.py --skill [new-skill-name] --category [category-node-id] --description "[what-it-does-best]"
+   ```
+4. **Invoke and Execute**: Call `view_file` on the newly created skill file (with `IsSkillFile: true` if applicable) and execute the task following its instructions.
+5. **Log**: Record:
+   `[🆕] [sub-task] — created and invoked new skill [new-skill-name]`
 
 ---
 
